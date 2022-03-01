@@ -1,4 +1,45 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+// ditto
+
+let name = ref('pikachu')
+let types = ref('electric')
+let img = ref(
+  'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png'
+)
+
+let height = ref('4')
+let experience = ref('112')
+let weight = ref('60')
+
+let keyword = ref('')
+
+const format = (types: any) => {
+  console.log(types.length)
+  // タイプが1つの
+  if (types.length === 1) {
+    return types[0].type.name
+  } else {
+    return `${types[0].type.name} / ${types[1].type.name}`
+  }
+}
+
+const getPoke = async (e: any) => {
+  e.preventDefault()
+  // console.log(e.target.elements.keyword.value)
+  const data = await fetch(`https://pokeapi.co/api/v2/pokemon/${keyword.value}`)
+  const json = await data.json()
+  console.log(json)
+
+  // レスポンスをセットする
+  name.value = json.name
+  types.value = format(json.types)
+  img.value = json.sprites.front_default
+  height.value = json.height
+  experience.value = json.base_experience
+  weight.value = json.weight
+}
+</script>
 
 <template>
   <body class="bg-gray-100">
@@ -17,19 +58,17 @@
 
       <div class="flex-grow">
         <div class="pt-0 pb-5 md:pt-10 md:pb-5 mx-4">
-          <form
-            action="/search"
-            method="GET"
-          >
+          <form @submit="getPoke">
             <div
               class="bg-white flex items-center rounded-lg shadow-md md:shadow-xl"
             >
               <input
                 id="search"
+                v-model="keyword"
                 autofocus
-                placeholder="Pikachu"
+                placeholder="pikachu"
                 type="search"
-                name="q"
+                name="keyword"
                 class="rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
               >
               <div class="p-2 md:p-4">
@@ -49,17 +88,17 @@
 
         <div class="text-center mt-4">
           <p class="text-2xl text-gray-600">
-            Pikachu
+            {{ name }}
           </p>
           <p class="text-sm text-gray-600 mt-1">
-            electric
+            {{ types }}
           </p>
         </div>
         <div class="flex justify-center mt-4">
           <img
             id="btn"
             class="w-24 h-24 rounded-full"
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+            :src="img"
             alt="Avatar"
           >
         </div>
@@ -68,7 +107,7 @@
         >
           <div>
             <p class="text-gray-700 font-bold">
-              4
+              {{ height }}
             </p>
             <p class="text-xs mt-2 text-gray-600">
               Height
@@ -76,7 +115,7 @@
           </div>
           <div>
             <p class="text-gray-700 font-bold">
-              112
+              {{ experience }}
             </p>
             <p class="text-xs mt-2 text-gray-600">
               Experience
@@ -84,7 +123,7 @@
           </div>
           <div>
             <p class="text-gray-700 font-bold">
-              60
+              {{ weight }}
             </p>
             <p class="text-xs mt-2 text-gray-700">
               Weight
@@ -97,24 +136,6 @@
 </template>
 
 <style scoped>
-a {
-  color: #42b983;
-}
-
-label {
-  margin: 0 0.5em;
-  font-weight: bold;
-}
-
-code {
-  background-color: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: #304455;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap');
-
 body {
   font-family: 'Oswald', sans-serif;
 }
@@ -151,27 +172,6 @@ body {
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
-  }
-}
-
-dialog[open] {
-  animation: appear 0.15s cubic-bezier(0, 1.8, 1, 1.8);
-}
-
-dialog::backdrop {
-  background: linear-gradient(45deg, rgba(0, 0, 0, 0.5), rgba(54, 54, 54, 0.5));
-  backdrop-filter: blur(3px);
-}
-
-@keyframes appear {
-  from {
-    opacity: 0;
-    transform: translateX(-3rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
   }
 }
 </style>
