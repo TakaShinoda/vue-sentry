@@ -8,9 +8,11 @@
     "preview": "vite preview",
     "lint": "eslint --fix src/*.{ts,vue} && eslint --fix src/**/*.{ts,vue}",
     "format": "prettier -w src/*.{ts,vue} && prettier -w src/**/*.{ts,vue}",
-    "fix": "yarn format && yarn lint"  
+    "fix": "yarn format && yarn lint"
   },
   "dependencies": {
+    "@sentry/tracing": "^6.18.1",
+    "@sentry/vue": "^6.18.1",
     "vue": "^3.2.25"
   },
   "devDependencies": {
