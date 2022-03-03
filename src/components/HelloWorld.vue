@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import Ability from './Ability.vue'
 import { ref } from 'vue'
+
 // ditto
 
 let name = ref('pikachu')
@@ -16,7 +18,7 @@ let keyword = ref('')
 
 const format = (types: any) => {
   console.log(types.length)
-  // タイプが1つの
+  // タイプ
   if (types.length === 1) {
     return types[0].type.name
   } else {
@@ -105,30 +107,18 @@ const getPoke = async (e: any) => {
         <div
           class="flex pb-5 justify-center flex-row space-x-8 md:space-x-24 mt-3 md:mt-6 text-center"
         >
-          <div>
-            <p class="text-gray-700 font-bold">
-              {{ height }}
-            </p>
-            <p class="text-xs mt-2 text-gray-600">
-              Height
-            </p>
-          </div>
-          <div>
-            <p class="text-gray-700 font-bold">
-              {{ experience }}
-            </p>
-            <p class="text-xs mt-2 text-gray-600">
-              Experience
-            </p>
-          </div>
-          <div>
-            <p class="text-gray-700 font-bold">
-              {{ weight }}
-            </p>
-            <p class="text-xs mt-2 text-gray-700">
-              Weight
-            </p>
-          </div>
+          <Ability
+            :ability="height"
+            tag="Height"
+          />
+          <Ability
+            :ability="experience"
+            tag="Experience"
+          />
+          <Ability
+            :ability="weight"
+            tag="Weight"
+          />
         </div>
       </div>
     </div>
