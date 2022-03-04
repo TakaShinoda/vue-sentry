@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Ability from './Ability.vue'
 import { ref } from 'vue'
+import * as Sentry from '@sentry/vue'
 
 // ditto
 
@@ -29,17 +30,32 @@ const format = (types: any) => {
 const getPoke = async (e: any) => {
   e.preventDefault()
   // console.log(e.target.elements.keyword.value)
-  const data = await fetch(`https://pokeapi.co/api/v2/pokemon/${keyword.value}`)
-  const json = await data.json()
-  console.log(json)
+  try {
+    const data = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/${keyword.value}`
+    )
+    const json = await data.json()
+    console.log(json)
 
-  // レスポンスをセットする
-  name.value = json.name
-  types.value = format(json.types)
-  img.value = json.sprites.front_default
-  height.value = json.height
-  experience.value = json.base_experience
-  weight.value = json.weight
+    // レスポンスをセットする
+    name.value = json.name
+    types.value = format(json.types)
+    img.value = json.sprites.front_default
+    height.value = json.height
+    experience.value = json.base_experience
+    weight.value = json.weight
+  } catch (err) {
+    console.log(err)
+    Sentry.captureException(new Error('エラー: 該当するポケモンが見つかりませんでした'))
+    window.alert('該当するポケモンが見つかりませんでした')
+    // エラーの時は空を返す
+    name.value = ''
+    types.value = ''
+    img.value = ''
+    height.value = ''
+    experience.value = ''
+    weight.value = ''
+  }
 }
 </script>
 
@@ -98,6 +114,7 @@ const getPoke = async (e: any) => {
         </div>
         <div class="flex justify-center mt-4">
           <img
+            v-if="img"
             id="btn"
             class="w-24 h-24 rounded-full"
             :src="img"
@@ -108,14 +125,17 @@ const getPoke = async (e: any) => {
           class="flex pb-5 justify-center flex-row space-x-8 md:space-x-24 mt-3 md:mt-6 text-center"
         >
           <Ability
+            v-if="height"
             :ability="height"
             tag="Height"
           />
           <Ability
+            v-if="experience"
             :ability="experience"
             tag="Experience"
           />
           <Ability
+            v-if="weight"
             :ability="weight"
             tag="Weight"
           />
