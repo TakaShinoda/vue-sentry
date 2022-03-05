@@ -2,23 +2,23 @@
 import Ability from './Ability.vue'
 import { ref } from 'vue'
 import * as Sentry from '@sentry/vue'
+import type { PokeType } from '../types/type'
 
-// ditto
-
+// デフォルトとして pikachu を表示
 let name = ref('pikachu')
 let types = ref('electric')
 let img = ref(
   'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png'
 )
-
-let height = ref('4')
-let experience = ref('112')
-let weight = ref('60')
-
+let height = ref<number | null>(4)
+let experience = ref<number | null>(112)
+let weight = ref<number | null>(60)
 let keyword = ref('')
 
-const format = (types: any) => {
-  console.log(types.length)
+const format = (types: PokeType) => {
+  console.log(types)
+  console.log(typeof types)
+
   // タイプ
   if (types.length === 1) {
     return types[0].type.name
@@ -27,7 +27,7 @@ const format = (types: any) => {
   }
 }
 
-const getPoke = async (e: any) => {
+const getPoke = async (e: Event) => {
   e.preventDefault()
   // console.log(e.target.elements.keyword.value)
   try {
@@ -46,15 +46,17 @@ const getPoke = async (e: any) => {
     weight.value = json.weight
   } catch (err) {
     console.log(err)
-    Sentry.captureException(new Error('エラー: 該当するポケモンが見つかりませんでした'))
+    Sentry.captureException(
+      new Error('エラー: 該当するポケモンが見つかりませんでした')
+    )
     window.alert('該当するポケモンが見つかりませんでした')
     // エラーの時は空を返す
     name.value = ''
     types.value = ''
     img.value = ''
-    height.value = ''
-    experience.value = ''
-    weight.value = ''
+    height.value = null
+    experience.value = null
+    weight.value = null
   }
 }
 </script>

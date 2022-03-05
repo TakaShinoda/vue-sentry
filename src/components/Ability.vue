@@ -2,12 +2,12 @@
 import { toRefs } from 'vue'
 
 type Props = {
-  ability: string
+  ability: number | null
   tag: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  ability: '',
+  ability: null,
   tag: '',
 })
 
